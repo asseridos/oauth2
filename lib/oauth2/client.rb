@@ -150,7 +150,11 @@ module OAuth2
       opts = {:raise_errors => options[:raise_errors], :parse => params.delete(:parse)}
       headers = params.delete(:headers) || {}
       if options[:token_method] == :post
-        opts[:body] = params
+        if headers['Content-Type'] == 'application/json'
+          opts[:body] = params.to_json
+        else
+          opts[:body] = params
+        end
         opts[:headers] = {'Content-Type' => 'application/x-www-form-urlencoded'}
       else
         opts[:params] = params
